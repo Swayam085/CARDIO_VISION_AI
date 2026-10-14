@@ -1,0 +1,77 @@
+# ============================================================
+# CARDIOVISION AI — Root .gitignore
+# ============================================================
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+*.whl
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.env
+.env.*
+!.env.example
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ML artifacts (large files)
+ml/artifacts/*.pkl
+ml/artifacts/*.joblib
+ml/artifacts/*.model
+backend/artifacts/*.pkl
+backend/artifacts/*.joblib
+
+# Dataset raw files (too large / license)
+ml/data/raw/*.csv
+ml/data/raw/*.xlsx
+ml/data/raw/*.zip
+
+# Node / Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/coverage/
+frontend-next/node_modules/
+frontend-next/.next/
+.next/
+*.tsbuildinfo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/
+coverage.xml
+
+# Logs
+*.log
+logs/
+
+.vercel
