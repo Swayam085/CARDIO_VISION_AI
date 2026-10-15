@@ -1,0 +1,10 @@
+# Exclude heavy directories not needed by Vercel
+backend/.venv/
+backend/venv/
+ml/
+tests/
+docs/
+.pytest_cache/
+__pycache__/
+*.pyc
+*.pyo

@@ -35,7 +35,9 @@ class Settings(BaseSettings):
         "http://localhost:5173",
         "http://127.0.0.1:5173",
         "http://localhost:3000",
+        "*",  # Allow all — tighten to your Vercel URL in production via env var
     ]
+
 
     @field_validator("cors_origins", mode="before")
     @classmethod

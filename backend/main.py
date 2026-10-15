@@ -86,10 +86,13 @@ def create_application() -> FastAPI:
     )
 
     # ── CORS ────────────────────────────────────────────────
+    cors_origins = list(settings.cors_origins)
+    allow_all = "*" in cors_origins
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=settings.cors_origins,
-        allow_credentials=True,
+        allow_origins=["*"] if allow_all else cors_origins,
+        allow_origin_regex=None if allow_all else r"https?://.*\.onrender\.com",
+        allow_credentials=not allow_all,
         allow_methods=["*"],
         allow_headers=["*"],
     )
@@ -139,6 +142,30 @@ def create_application() -> FastAPI:
     app.include_router(metrics.router, prefix=api_prefix, tags=["Metrics"], include_in_schema=False)
 
     logger.info("All routers registered under root and %s", api_prefix)
+    
+    # ── Optional Static Frontend Serving (if built in frontend/dist) ──
+    frontend_dist = _ROOT_DIR / "frontend" / "dist"
+    if (frontend_dist / "index.html").exists():
+        from fastapi.staticfiles import StaticFiles
+        from fastapi.responses import FileResponse
+
+        assets_dir = frontend_dist / "assets"
+        if assets_dir.exists():
+            app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="frontend-assets")
+
+        models_dir = frontend_dist / "models"
+        if models_dir.exists():
+            app.mount("/models", StaticFiles(directory=str(models_dir)), name="frontend-models")
+
+        @app.get("/{full_path:path}", include_in_schema=False)
+        async def serve_frontend_spa(full_path: str):
+            candidate = frontend_dist / full_path
+            if candidate.is_file():
+                return FileResponse(candidate)
+            return FileResponse(frontend_dist / "index.html")
+
+        logger.info("Serving compiled frontend SPA from %s", frontend_dist)
+
     return app
 
 
@@ -147,10 +174,12 @@ app = create_application()
 # ── Dev server entry point ───────────────────────────────────
 
 if __name__ == "__main__":
+    import os
+    port = int(os.environ.get("PORT", settings.backend_port))
     uvicorn.run(
         "main:app",
         host=settings.backend_host,
-        port=settings.backend_port,
+        port=port,
         reload=settings.backend_reload,
         log_level=settings.backend_log_level,
         app_dir=str(_BACKEND_DIR),

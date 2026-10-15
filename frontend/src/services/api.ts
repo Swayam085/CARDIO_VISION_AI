@@ -24,9 +24,18 @@ export interface AnalyzeResponse {
   shap_explanations?: Record<string, ExplainResponse>;
 }
 
+const resolveApiBaseUrl = (): string => {
+  const envUrl = import.meta.env.VITE_API_BASE_URL;
+  if (!envUrl) return 'http://localhost:8000';
+  if (envUrl.startsWith('http://') || envUrl.startsWith('https://')) {
+    return envUrl;
+  }
+  return `https://${envUrl}`;
+};
+
 // ── Axios instance ────────────────────────────────────────────
 const api: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000',
+  baseURL: resolveApiBaseUrl(),
   timeout: 30_000,
   headers: { 'Content-Type': 'application/json' },
 });

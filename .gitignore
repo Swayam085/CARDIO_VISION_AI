@@ -34,8 +34,8 @@ ENV/
 ml/artifacts/*.pkl
 ml/artifacts/*.joblib
 ml/artifacts/*.model
-backend/artifacts/*.pkl
-backend/artifacts/*.joblib
+# Retain pre-trained production model artifacts for deployment
+!backend/artifacts/*.joblib
 
 # Dataset raw files (too large / license)
 ml/data/raw/*.csv

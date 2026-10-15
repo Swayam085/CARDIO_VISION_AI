@@ -1,0 +1,12 @@
+# Exclude virtual environment (largest culprit)
+.venv/
+venv/
+env/
+
+# Exclude ML training artifacts and data
+__pycache__/
+*.pyc
+*.pyo
+
+# Exclude test files
+tests/
